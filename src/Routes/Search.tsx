@@ -1,4 +1,5 @@
-function Search() {
-  return null;
+
+function Search(){
+    return null;
 }
 export default Search;

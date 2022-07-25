@@ -4,22 +4,23 @@ import Home from "./Routes/Home";
 import Search from "./Routes/Search";
 import Tv from "./Routes/Tv";
 
+
 function App() {
   return (
-    <Router>
+   <Router>
       <Header />
-      <Switch>
-        <Route path="/">
-          <Home />
-        </Route>
-        <Route path="/tv">
-          <Tv />
-        </Route>
-        <Route path="/search">
-          <Search />
-        </Route>
-      </Switch>
-    </Router>
+    <Switch>
+      <Route path="/tv">
+        <Tv />
+      </Route>
+      <Route path="/search">
+        <Search />
+      </Route>
+      <Route path="/">
+        <Home />
+      </Route>
+    </Switch>
+   </Router>
   );
 }
  
