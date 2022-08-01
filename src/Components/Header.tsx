@@ -101,9 +101,6 @@ function Header() {
   const navAnimation = useAnimation();
   const { scrollY } = useViewportScroll();
   useEffect(() => {
-    scrollY.onChange(() => console.log(scrollY.get()))
-  }, [scrollY]);
-  useEffect(() => {
     scrollY.onChange(() => {
       if (scrollY.get() > 80) {
         navAnimation.start({

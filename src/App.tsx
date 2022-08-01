@@ -20,7 +20,6 @@ function App() {
           <Home />
         </Route>
       </Switch>
-      <div style={{ height: 1000 }}>123123123</div>
     </Router>
   );
 }
