@@ -7,21 +7,22 @@ import Tv from "./Routes/Tv";
 
 function App() {
   return (
-   <Router>
+    <Router>
       <Header />
-    <Switch>
-      <Route path="/tv">
-        <Tv />
-      </Route>
-      <Route path="/search">
-        <Search />
-      </Route>
-      <Route path="/">
-        <Home />
-      </Route>
-    </Switch>
-   </Router>
+      <Switch>
+        <Route path="/tv">
+          <Tv />
+        </Route>
+        <Route path="/search">
+          <Search />
+        </Route>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+      <div style={{ height: 1000 }}>123123123</div>
+    </Router>
   );
 }
- 
+
 export default App;
