@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { getMovies, IGetMoviesResult } from '../api';
 import styled from 'styled-components';
 import { makeImagePath } from "../utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useViewportScroll } from "framer-motion";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
@@ -98,6 +98,47 @@ const infoVariants ={
     }
 }
 
+const Overlay = styled(motion.div)`
+ position: fixed;
+ top: 0;
+ width: 100%;
+ height: 100%;
+ background-color: rgba(0,0,0,0.6);
+ opacity: 0;
+`;
+
+const MovieCard = styled(motion.div)`
+ position: absolute;
+ height: 40vh;
+ width: 35vw;
+ left: 0;
+ right: 0;
+ margin: 0 auto;
+ border-radius: 15px;
+ overflow: hidden;
+ background-color: ${props => props.theme.black.lighter};
+`;
+
+const MovieCover = styled.img`
+ width: 100%;
+ height: 200px;
+`;
+
+const CardTitle = styled.h3`
+ color: ${(props)=> props.theme.white.lighter};
+ padding: 20px;
+ font-size: 36px;
+ position: relative;
+ top: -80px;
+`;
+
+const CardOverView = styled.p`
+ padding:20px;
+ position: relative;
+ top: -90px;
+ color: ${(props)=> props.theme.white.lighter};
+`;
+
 const rowVariants = {
     hidden: {
         x: window.outerWidth+5,
@@ -110,10 +151,11 @@ const rowVariants = {
     },
 }
 
+
 function Home() {
     const history = useHistory()
     const bigMovieMatch = useRouteMatch<{movieId:string}>("/movies/:movieId")
-    console.log(bigMovieMatch);
+    const {scrollY} = useViewportScroll();
     const { data, isLoading } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies)
     const [index, setIndex] = useState(0);
     const [leaving, setLeaving] = useState(false);
@@ -133,7 +175,11 @@ function Home() {
     const toggleLeaving = () =>{
         setLeaving((prev)=>!prev);
     };
-
+    const onOverlayClick = () =>{
+        history.push(`/`)
+    };
+    const clickedMovie = bigMovieMatch?.params.movieId && data?.results.find((movie)=>movie.id===+bigMovieMatch.params.movieId)
+    
     return <Wrapper>{isLoading ? (
         <Loader> Loading... </Loader>
     ) : (
@@ -161,21 +207,29 @@ function Home() {
                     </Row>
                 </AnimatePresence>
             </Slider>
-                {bigMovieMatch ? <AnimatePresence>
-                    <motion.div
+            <AnimatePresence>
+            {bigMovieMatch ? (
+                <>
+                <Overlay onClick={onOverlayClick} animate={{opacity:1}} exit={{opacity:0}} />
+                <MovieCard
                     layoutId={bigMovieMatch.params.movieId}
                     style={{
-                        position: "absolute",
-                        height: "40vh",
-                        width: "35vw",
-                        backgroundColor: "white",
-                        top: 50,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        margin: "auto"
-                    }}/>
-                </AnimatePresence> : null}
+                        top: scrollY.get() + 120,
+                    }}>{clickedMovie && (
+                        <>
+                            <MovieCover style={{
+                        backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})`,}} />
+                            <CardTitle>{clickedMovie.title}</CardTitle>
+                            <CardOverView>
+                                {clickedMovie.overview}
+                            </CardOverView>
+                        </>
+                    )}
+                    </MovieCard>
+                </>
+                ) : null}
+            </AnimatePresence>
+                
         </>
     )}</Wrapper>;
 
